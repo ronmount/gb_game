@@ -1,3 +1,7 @@
+from road import Road
+from board import Board
+from tree import Tree
+
 import pygame
 
 pygame.init()  # Инициализируем модуль pygame
@@ -19,6 +23,16 @@ snd_dir = "media/snd/"
 img_dir = "media/img/"
 
 all_sprites = pygame.sprite.Group()
+
+road = Road()
+all_sprites.add(road)
+
+board_left = Board('left')
+board_right = Board('right')
+all_sprites.add([board_left, board_right])
+
+tree = Tree()
+all_sprites.add(tree)
 
 # Создаем игровой экран
 screen = pygame.display.set_mode((width, height))
