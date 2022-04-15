@@ -1,3 +1,7 @@
+from auto_forward import Auto_forward
+from auto_back import Auto_back
+
+
 import pygame
 
 pygame.init()  # Инициализируем модуль pygame
@@ -19,6 +23,12 @@ snd_dir = "media/snd/"
 img_dir = "media/img/"
 
 all_sprites = pygame.sprite.Group()
+
+auto_forward = Auto_forward()
+all_sprites.add(auto_forward)
+
+auto_back = Auto_back()
+all_sprites.add(auto_back)
 
 # Создаем игровой экран
 screen = pygame.display.set_mode((width, height))
