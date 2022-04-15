@@ -1,3 +1,7 @@
+from player import Player
+from speedometer import Speedometer
+from arrow import Arrow
+
 import pygame
 
 pygame.init()  # Инициализируем модуль pygame
@@ -19,6 +23,16 @@ snd_dir = "media/snd/"
 img_dir = "media/img/"
 
 all_sprites = pygame.sprite.Group()
+
+player = Player()
+all_sprites.add(player)
+
+speedometer = Speedometer()
+all_sprites.add(speedometer)
+
+arrow = Arrow()
+all_sprites.add(arrow)
+
 
 # Создаем игровой экран
 screen = pygame.display.set_mode((width, height))
