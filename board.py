@@ -17,3 +17,17 @@ class Board(pygame.sprite.Sprite):
              self.rect.centerx = width // 2 + 370
         else:
              self.rect.centerx = width // 2 - 370
+        self.max_speed = 50
+        self.min_speed = 0
+        self.speed = 0
+
+    def update(self):
+        keystate = pygame.key.get_pressed()
+        if keystate[pygame.K_UP] and self.speed < self.max_speed:
+            self.speed += 1
+        elif keystate[pygame.K_DOWN] and self.speed > self.min_speed:
+            self.speed -= 1
+        self.rect.y += self.speed
+
+        if self.rect.top >= 0:
+            self.rect.bottom = height
