@@ -16,6 +16,9 @@ class Player(pygame.sprite.Sprite):
         self.max_speed = 50
         self.min_speed = 0
         self.speed = 0
+        self.sound_move = pygame.mixer.Sound(snd_dir + "motor.mp3")
+        self.sound_explosion = pygame.mixer.Sound(snd_dir + "explosion_player.mp3")
+        self.sound_shoot = pygame.mixer.Sound(snd_dir + "shoot.mp3")
 
     def update(self):
         keystate = pygame.key.get_pressed()
@@ -27,3 +30,7 @@ class Player(pygame.sprite.Sprite):
             self.speed += 1
         elif keystate[pygame.K_DOWN] and self.speed > self.min_speed:
             self.speed -= 1
+        if self.speed > 0 and not pygame.mixer.get_busy():
+            self.sound_move.play()
+        if self.speed == 0:
+            self.sound_move.stop()
