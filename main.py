@@ -23,12 +23,14 @@ snd_dir = "media/snd/"
 img_dir = "media/img/"
 
 all_sprites = pygame.sprite.Group()
+bullets = pygame.sprite.Group()
+cars = pygame.sprite.Group()
 
-auto_forward = Auto_forward()
-all_sprites.add(auto_forward)
-
-auto_back = Auto_back()
-all_sprites.add(auto_back)
+for i in range(4):
+    auto_forward = Auto_forward()
+    auto_back = Auto_back()
+    all_sprites.add((auto_forward, auto_back))
+    cars.add((auto_forward, auto_back))
 
 # Создаем игровой экран
 screen = pygame.display.set_mode((width, height))
@@ -39,12 +41,53 @@ pygame.display.set_icon(icon)  # устанавливаем иконку в ок
 timer = pygame.time.Clock()  # Создаем таймер pygame
 run = True
 
+
+def get_hit_sprite(hits_dict):
+    for hit in hits_dict.values():
+        return hit[0]
+
+
 while run:  # Начинаем бесконечный цикл
     timer.tick(fps)  # Контроль времени (обновление игры)
     all_sprites.update()
     for event in pygame.event.get():  # Обработка ввода (события)
         if event.type == pygame.QUIT:  # Проверить закрытие окна
             run = False  # Завершаем игровой цикл
+
+    hit_bullets = pygame.sprite.groupcollide(bullets, cars, True, False)
+
+    if hit_bullets:
+        car = get_hit_sprite(hit_bullets)
+        car.sound.play()
+        if car.type == "forward":
+            auto = Auto_forward()
+            auto.sound.play()
+            all_sprites.add(auto)
+            cars.add(auto)
+        else:
+            auto = Auto_back()
+            auto.sound.play()
+            all_sprites.add(auto)
+            cars.add(auto)
+        car.kill()
+    for car in cars:
+        cars.remove(car)
+        hit_another_car = pygame.sprite.spritecollide(car, cars, False)
+        if hit_another_car:
+            car.sound.play()
+            if car.type == "forward":
+                auto = Auto_forward()
+                auto.sound.play()
+                all_sprites.add(auto)
+                cars.add(auto)
+            else:
+                auto = Auto_back()
+                auto.sound.play()
+                all_sprites.add(auto)
+                cars.add(auto)
+        else:
+            cars.add(car)
+
     # Рендеринг (прорисовка)
     screen.fill(GREEN)  # Заливка заднего фона
     all_sprites.draw(screen)

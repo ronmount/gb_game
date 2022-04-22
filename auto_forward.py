@@ -25,6 +25,7 @@ class Auto_forward(pygame.sprite.Sprite):
         self.global_min_speed = 0
         self.global_max_speed = 50
         self.rect.y = random.randrange(-height, 0, 300)
+        self.sound = pygame.mixer.Sound(snd_dir + "explosion_car.mp3")
 
     def update(self):
         keystate = pygame.key.get_pressed()
