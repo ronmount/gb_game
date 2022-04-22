@@ -1,6 +1,7 @@
 from player import Player
 from speedometer import Speedometer
 from arrow import Arrow
+from bullet import Bullet
 
 import pygame
 
@@ -23,6 +24,7 @@ snd_dir = "media/snd/"
 img_dir = "media/img/"
 
 all_sprites = pygame.sprite.Group()
+bullets = pygame.sprite.Group()
 
 player = Player()
 all_sprites.add(player)
@@ -49,6 +51,11 @@ while run:  # Начинаем бесконечный цикл
     for event in pygame.event.get():  # Обработка ввода (события)
         if event.type == pygame.QUIT:  # Проверить закрытие окна
             run = False  # Завершаем игровой цикл
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                bullet = Bullet(player)
+                all_sprites.add(bullet)
+                bullets.add(bullet)
     # Рендеринг (прорисовка)
     screen.fill(GREEN)  # Заливка заднего фона
     all_sprites.draw(screen)
