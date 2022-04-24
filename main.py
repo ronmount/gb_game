@@ -1,3 +1,5 @@
+from auto_forward import Auto_forward
+from auto_back import Auto_back
 from player import Player
 from speedometer import Speedometer
 from arrow import Arrow
@@ -24,11 +26,16 @@ snd_dir = "media/snd/"
 img_dir = "media/img/"
 
 all_sprites = pygame.sprite.Group()
-players = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
-
+players = pygame.sprite.Group()
 cars = pygame.sprite.Group()
 boards = pygame.sprite.Group()
+
+for i in range(4):
+    auto_forward = Auto_forward()
+    auto_back = Auto_back()
+    all_sprites.add((auto_forward, auto_back))
+    cars.add((auto_forward, auto_back))
 
 player = Player()
 all_sprites.add(player)
@@ -40,7 +47,6 @@ all_sprites.add(speedometer)
 arrow = Arrow()
 all_sprites.add(arrow)
 
-
 # Создаем игровой экран
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption(game_name)  # Заголовок окна
@@ -49,6 +55,12 @@ pygame.display.set_icon(icon)  # устанавливаем иконку в ок
 
 timer = pygame.time.Clock()  # Создаем таймер pygame
 run = True
+
+
+def get_hit_sprite(hits_dict):
+    for hit in hits_dict.values():
+        return hit[0]
+
 
 while run:  # Начинаем бесконечный цикл
     timer.tick(fps)  # Контроль времени (обновление игры)
@@ -62,6 +74,40 @@ while run:  # Начинаем бесконечный цикл
                 bullet = Bullet(player)
                 all_sprites.add(bullet)
                 bullets.add(bullet)
+
+    hit_bullets = pygame.sprite.groupcollide(bullets, cars, True, False)
+
+    if hit_bullets:
+        car = get_hit_sprite(hit_bullets)
+        car.sound.play()
+        if car.type == "forward":
+            auto = Auto_forward()
+            auto.sound.play()
+            all_sprites.add(auto)
+            cars.add(auto)
+        else:
+            auto = Auto_back()
+            auto.sound.play()
+            all_sprites.add(auto)
+            cars.add(auto)
+        car.kill()
+    for car in cars:
+        cars.remove(car)
+        hit_another_car = pygame.sprite.spritecollide(car, cars, False)
+        if hit_another_car:
+            car.sound.play()
+            if car.type == "forward":
+                auto = Auto_forward()
+                auto.sound.play()
+                all_sprites.add(auto)
+                cars.add(auto)
+            else:
+                auto = Auto_back()
+                auto.sound.play()
+                all_sprites.add(auto)
+                cars.add(auto)
+        else:
+            cars.add(car)
 
     hit_boards = pygame.sprite.groupcollide(players, boards, False, False)
     hit_cars = pygame.sprite.groupcollide(players, cars, False, False)
